@@ -8,7 +8,7 @@ GtkWidget *button;
 GtkWidget *label;
 GtkWidget *text;
 
-void on_button_clicked (GtkButton *button) {  
+gboolean command(gpointer data){
     FILE *p;
     gchar *output;
     GtkTextBuffer *buffer;
@@ -21,11 +21,20 @@ void on_button_clicked (GtkButton *button) {
         gtk_label_set_text(GTK_LABEL(label), (const gchar*) "POPEN: Failed to execute command.");
     }
     else {
-        gtk_text_buffer_set_text (buffer,  output, BUFFER );
+        int count = 1;
+        
+        gtk_text_buffer_set_text(buffer,(const gchar*) p, BUFFER);
+
         text = gtk_text_view_new();
         gtk_text_view_set_buffer(GTK_TEXT_VIEW (text), buffer);
         gtk_label_set_text(GTK_LABEL(label), (const gchar*) "Success Updated!");
     }
+
+    return 0;
+}
+
+static void on_button_clicked (GtkButton *button, gpointer data) {  
+    g_idle_add(command,NULL);
 }
 
 int main(int argc, char **argv) {
