@@ -7,34 +7,34 @@ GtkWidget *window;
 GtkWidget *button;
 GtkWidget *label;
 GtkWidget *text;
+GtkTextBuffer *buffer;
 
 gboolean command(gpointer data){
-    FILE *p;
-    gchar *output;
-    GtkTextBuffer *buffer;
+    GPid pid;
+    gchar *cmd[] = {"/usr/bin/sudo", "apt update", "apt upgrade", "--args",NULL};
+    gint in, out, err;
+    GIOChannel *out_ch, *err_ch;
+    gboolean ret;
+    g_autoptr(GError) error = NULL;
+    
 
-    buffer = gtk_text_buffer_new(NULL) ;
+    ret = g_spawn_async_with_pipes( NULL, cmd, NULL,
+                                G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_FILE_AND_ARGV_ZERO, NULL,
+                                NULL, &pid, &in, &out, &err, &error );
 
-    p = popen("sudo apt update && sudo apt upgrade","r");
-
-    if (p == NULL){
-        gtk_label_set_text(GTK_LABEL(label), (const gchar*) "POPEN: Failed to execute command.");
+    if (error != NULL){
+        g_error ("Spawning child failed: %s", error->message);
+        return 1;
     }
     else {
-        int count = 1;
-        
-        gtk_text_buffer_set_text(buffer,(const gchar*) p, BUFFER);
-
-        text = gtk_text_view_new();
-        gtk_text_view_set_buffer(GTK_TEXT_VIEW (text), buffer);
-        gtk_label_set_text(GTK_LABEL(label), (const gchar*) "Success Updated!");
+        gtk_label_set_text(GTK_LABEL(label), (const gchar*) "Successfully Updated!");
     }
 
     return 0;
 }
 
 static void on_button_clicked (GtkButton *button, gpointer data) {  
-    g_idle_add(command,NULL);
+    g_idle_add(command,data);
 }
 
 int main(int argc, char **argv) {
