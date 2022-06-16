@@ -1,17 +1,11 @@
 #include <gtk/gtk.h>
-#include<stdlib.h>
-#include<sys/wait.h>
-#include<unistd.h>
-
-#define BUFFER 100
 
 GtkBuilder *builder;
 GtkWidget *window;
 GtkWidget *button;
 GtkWidget *label;
 
-gboolean idle(gpointer data)
-{
+gboolean idle(gpointer data){
     gtk_label_set_text(GTK_LABEL(label), (const gchar*) "Successfully Updated!");
     return 0;
 }
