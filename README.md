@@ -8,6 +8,7 @@ run this command in terminal
 
 ```sh
 git clone https://github.com/busracagliyan/updater
+cd updater
 gcc -Wall `pkg-config --cflags --libs gtk+-3.0` -o updateGtkApp updateGtkApp.c `pkg-config --cflags --libs gtk+-3.0` -export-dynamic
 ./updateGtkApp
 ```
